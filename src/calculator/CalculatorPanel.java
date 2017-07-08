@@ -9,6 +9,10 @@ import java.util.HashMap;
 class CalculatorPanel extends JPanel {
     private JButton display;
     private JPanel buttonPanel;
+    private int firstOperand;
+    private int secondOperand;
+    private String operator = "+";
+    private int result;
 
     CalculatorPanel() {
         setLayout(new BorderLayout());
@@ -44,7 +48,7 @@ class CalculatorPanel extends JPanel {
         private HashMap<String, State> states;
         private State currentState;
 
-        public ButtonListener() {
+        ButtonListener() {
             states = new HashMap<>();
             states.put("Start", new Start());
             states.put("FirstOperand", new FirstOperand());
@@ -52,7 +56,7 @@ class CalculatorPanel extends JPanel {
             states.put("SecondOperand", new SecondOperand());
             setCurrentState("Start");
         }
-        public void setCurrentState(String stateName) {
+        void setCurrentState(String stateName) {
             currentState = states.get(stateName);
         }
         @Override
@@ -83,8 +87,10 @@ class CalculatorPanel extends JPanel {
             if(Character.isDigit(label.charAt(0))) {
                 display.setText(display.getText() + label);
             } else if (label.equals(".") || label.equals("=")){
-                ;
+
             } else {
+                operator = label;
+                firstOperand = Integer.parseInt(display.getText());
                 context.setCurrentState("Operator");
             }
         }
@@ -104,6 +110,9 @@ class CalculatorPanel extends JPanel {
             if(Character.isDigit(label.charAt(0))) {
                 display.setText(display.getText() + label);
             } else if (label.equals("=")) {
+                secondOperand = Integer.parseInt(display.getText());
+                result = firstOperand + secondOperand;
+                display.setText(Integer.toString(result));
                 context.setCurrentState("Start");
             }
         }
