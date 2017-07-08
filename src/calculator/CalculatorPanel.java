@@ -68,6 +68,22 @@ class CalculatorPanel extends JPanel {
         void handle(ButtonListener context, String label) {
             display.setText(display.getText() + label);
         }
+        void applyOperand() {
+            switch (operator) {
+                case "+":
+                    result = firstOperand + secondOperand;
+                    break;
+                case "-":
+                    result = firstOperand - secondOperand;
+                    break;
+                case "*":
+                    result = firstOperand * secondOperand;
+                    break;
+                default:
+                    result = firstOperand / secondOperand;
+                    break;
+            }
+        }
     }
     private class Start extends State {
         @Override
@@ -111,21 +127,7 @@ class CalculatorPanel extends JPanel {
                 display.setText(display.getText() + label);
             } else if (label.equals("=")) {
                 secondOperand = Integer.parseInt(display.getText());
-                switch (operator) {
-                    case "+":
-                        result = firstOperand + secondOperand;
-                        break;
-                    case "-":
-                        result = firstOperand - secondOperand;
-                        break;
-                    case "*":
-                        result = firstOperand * secondOperand;
-                        break;
-                    default:
-                        result = firstOperand / secondOperand;
-                        break;
-                }
-
+                applyOperand();
                 display.setText(Integer.toString(result));
                 context.setCurrentState("Start");
             }
