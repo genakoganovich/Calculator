@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 class CalculatorPanel extends JPanel {
     private JButton display;
@@ -40,13 +41,71 @@ class CalculatorPanel extends JPanel {
         return panel;
     }
     private class ButtonListener implements ActionListener {
+        private HashMap<String, State> states;
+        private State currentState;
+
+        public ButtonListener() {
+            states = new HashMap<>();
+            states.put("Start", new Start());
+            states.put("FirstOperand", new FirstOperand());
+            states.put("Operator", new Operator());
+            states.put("SecondOperand", new SecondOperand());
+            setCurrentState("Start");
+        }
+        public void setCurrentState(String stateName) {
+            currentState = states.get(stateName);
+        }
         @Override
         public void actionPerformed(ActionEvent e) {
-            String label = ((JButton)e.getSource()).getText();
-            display.setText(display.getText() + label);
+            currentState.handle(this, ((JButton)e.getSource()).getText());
         }
     }
     private class State {
-
+        void handle(ButtonListener context, String label) {
+            display.setText(display.getText() + label);
+        }
+    }
+    private class Start extends State {
+        @Override
+        void handle(ButtonListener context, String label) {
+            if(Character.isDigit(label.charAt(0))) {
+                display.setText(label);
+                context.setCurrentState("FirstOperand");
+            } else {
+                display.setText("");
+                context.setCurrentState("Start");
+            }
+        }
+    }
+    private class FirstOperand extends State {
+        @Override
+        void handle(ButtonListener context, String label) {
+            if(Character.isDigit(label.charAt(0))) {
+                display.setText(display.getText() + label);
+            } else if (label.equals(".") || label.equals("=")){
+                ;
+            } else {
+                context.setCurrentState("Operator");
+            }
+        }
+    }
+    private class Operator extends State {
+        @Override
+        void handle(ButtonListener context, String label) {
+            if(Character.isDigit(label.charAt(0))) {
+                display.setText(label);
+                context.setCurrentState("SecondOperand");
+            }
+        }
+    }
+    private class SecondOperand extends State {
+        @Override
+        void handle(ButtonListener context, String label) {
+            if(Character.isDigit(label.charAt(0))) {
+                display.setText(display.getText() + label);
+            } else if (label.equals("=")) {
+                context.setCurrentState("Start");
+            }
+        }
     }
 }
