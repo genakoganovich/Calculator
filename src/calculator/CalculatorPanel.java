@@ -111,7 +111,21 @@ class CalculatorPanel extends JPanel {
                 display.setText(display.getText() + label);
             } else if (label.equals("=")) {
                 secondOperand = Integer.parseInt(display.getText());
-                result = firstOperand + secondOperand;
+                switch (operator) {
+                    case "+":
+                        result = firstOperand + secondOperand;
+                        break;
+                    case "-":
+                        result = firstOperand - secondOperand;
+                        break;
+                    case "*":
+                        result = firstOperand * secondOperand;
+                        break;
+                    default:
+                        result = firstOperand / secondOperand;
+                        break;
+                }
+
                 display.setText(Integer.toString(result));
                 context.setCurrentState("Start");
             }
