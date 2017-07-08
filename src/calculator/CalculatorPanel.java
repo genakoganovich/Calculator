@@ -2,9 +2,11 @@ package calculator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 class CalculatorPanel extends JPanel {
-    private JComponent display;
+    private JButton display;
     private JPanel buttonPanel;
 
     CalculatorPanel() {
@@ -15,13 +17,14 @@ class CalculatorPanel extends JPanel {
         add(buttonPanel, BorderLayout.CENTER);
         
     }
-    private JComponent createDisplay() {
-        JComponent display = new JButton("0");
+    private JButton createDisplay() {
+        JButton display = new JButton("0");
         display.setEnabled(false);
         return display;
     }
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel();
+        ActionListener buttonListener = new ButtonListener();
         panel.setLayout(new GridLayout(4, 4));
         String[] labels = new String[]{
                 "7", "8", "9", "/",
@@ -30,8 +33,20 @@ class CalculatorPanel extends JPanel {
                 "0", ".", "=", "+"
         };
         for (String s : labels) {
-            panel.add(new JButton(s));
+            JButton button = new JButton(s);
+            button.addActionListener(buttonListener);
+            panel.add(button);
         }
         return panel;
+    }
+    private class ButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String label = ((JButton)e.getSource()).getText();
+            display.setText(display.getText() + label);
+        }
+    }
+    private class State {
+
     }
 }
